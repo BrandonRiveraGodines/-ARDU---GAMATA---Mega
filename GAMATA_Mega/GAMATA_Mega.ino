@@ -23,7 +23,7 @@
 #define AguaPIN 43 // Pin para el riego del agua
 #define FertPIN 42 // PIN para el riego del agua
 
-String comando;
+String comando = "leerTempHum";
 boolean stringComplete = false;
 
 // Variables necesarias para el motor.
@@ -45,13 +45,13 @@ int Paso [ 8 ][ 4 ] = {
 };
 
 // Variables necesarias para el DHT
-DHT dht_1(DHTPIN_1, DHTTYPE); // Se inicia una variable que será usada por Arduino para comunicarse con el sensor
+// DHT dht_1(DHTPIN_1, DHTTYPE); // Se inicia una variable que será usada por Arduino para comunicarse con el sensor
 DHT dht_2(DHTPIN_2, DHTTYPE); // Se inicia otra variable que será usada por Arduino para comunicarse con el sensor
 float temp, hum; // Se crean variables para obtener los datos.
 int c = 0, b = 0;
 
 // Variables necesarias para la resistencia foto.
-const int LDRPin = A15;
+const int LDRPin = A0;
 int V, ilum;
 
 void setup() {
@@ -68,7 +68,7 @@ void setup() {
   pinMode(ON4, OUTPUT);
 
   // Setup necesario para los sensores DHT22
-  dht_1.begin(); // Se inicia el sensor (1).
+  // dht_1.begin(); // Se inicia el sensor (1).
   dht_2.begin(); // Se inicia el sensor (2).
   pinMode(DHTPIN_1, OUTPUT);
   pinMode(DHTPIN_2, OUTPUT);
@@ -78,11 +78,11 @@ void setup() {
   pinMode(FertPIN, OUTPUT);
 
   //Establecer la temperatura máxima
-  setTempHum();
+  //setTempHum();
 }
 
 void loop() {
-  leerDHTs();
+  // leerDHTs();
   
   if (comando.equals("subir")) {
     Direction = false;
@@ -190,17 +190,20 @@ void setTempHum() {
 }
 
 void leerDHTs() {
-  float h1 = dht_1.readHumidity(); // Lee la humedad del primer sensor.
+  //float h1 = dht_1.readHumidity(); // Lee la humedad del primer sensor.
   float h2 = dht_2.readHumidity(); // Lee la humedad del segundo sensor
-  float t1 = dht_1.readTemperature(); // Lee la temperatura del primer sensor.
+  //float t1 = dht_1.readTemperature(); // Lee la temperatura del primer sensor.
   float t2 = dht_2.readTemperature(); // Lee la temperatura del segundo sensor.
-  float h = (h1 + h2) / 2;
-  float t = (t1 + t2) / 2;
+  //float h = (h1 + h2) / 2;
+  //float t = (t1 + t2) / 2;
 
-  if (t >= temp) {
+  Serial.println(h2);
+  Serial.println(t2);
+
+  if (t2 >= temp) {
     motores();
   }
-  if (h < hum) {
+  if (h2 < hum) {
     motores();
   }
 }
@@ -211,8 +214,9 @@ void leerDHTs() {
  * Comienzan los codigos para luminocidad
  */
 void leerLums(){
-  ilum = ((long)(1024-V)*ResOscu*10)/((long)ResLight*ResCalib*V); // Usar si LDR entre GND y A0
-  ilum = ((long)V*ResOscu*10)/((long)ResLight*ResCalib*(1024-V)); // Usar si LDR entre A0 y Vcc (como en el esquema anterior)
+  //ilum = ((long)(1024-V)*ResOscu*10)/((long)ResLight*ResCalib*V); // Usar si LDR entre GND y A0
+  //ilum = ((long)V*ResOscu*10)/((long)ResLight*ResCalib*(1024-V)); // Usar si LDR entre A0 y Vcc (como en el esquema anterior)
+  ilum = analogRead(LDRPin);
   Serial.println(ilum);
   delay(1000);
 }
@@ -225,20 +229,22 @@ void leerLums(){
   */
 void regar(){
   digitalWrite(AguaPIN, HIGH);
-  delay(2000);
+  delay(4000);
   digitalWrite(AguaPIN, LOW);
-  delay(2000);
+  delay(200);
 }
 
 void fertilizar(){
   digitalWrite(FertPIN, HIGH);
-  delay(2000);
+  delay(4000);
   digitalWrite(FertPIN, LOW);
-  delay(2000);
+  delay(200);
 }
 /*
  * Terminan los codigos de rogar y fertilizar.
  */
+
+ /*
 void serialEvent(){
   while(Serial.available()){
     char inChar = (char)Serial.read();
@@ -249,4 +255,4 @@ void serialEvent(){
       comando += inChar;
     }
   }
-}
+}*/
