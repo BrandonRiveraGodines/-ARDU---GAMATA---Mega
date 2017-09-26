@@ -1,17 +1,17 @@
 // Defines para los motores.
 #define IN1  53   // Pines para M1
-#define IN2  52   // Pines para M1
-#define IN3  51   // Pines para M1
-#define IN4  50   // Pines para M1
-#define ON1 49     // Pines para M2
-#define ON2 48     // Pines para M2
-#define ON3 47     // Pines para M2
-#define ON4 46     // Pines para M2
+#define IN2  51   // Pines para M1
+#define IN3  49   // Pines para M1
+#define IN4  47   // Pines para M1
+#define ON1 45     // Pines para M2
+#define ON2 43     // Pines para M2
+#define ON3 41     // Pines para M2
+#define ON4 39     // Pines para M2
 
 // Defines para los DHT
 #include "DHT.h"  // Cargamos la libreria DHT
-#define DHTPIN_1 45  // Pin para el sensor DHT22 #1
-#define DHTPIN_2 44  // Pin para el sensor DHT22 #2
+#define DHTPIN_1 37  // Pin para el sensor DHT22 #1
+// #define DHTPIN_2 35  // Pin para el sensor DHT22 #2
 #define DHTTYPE DHT22 // SE selecciona el tipo de DHT (hay otros DHT)
 
 // Defines para la fotoresistencia
@@ -20,10 +20,10 @@
 #define ResOscu 1000 // Resistencia en oscuridad en KiloOhms
 
 // Defines para el riego y para el fertilizante.
-#define AguaPIN 43 // Pin para el riego del agua
-#define FertPIN 42 // PIN para el riego del agua
+#define AguaPIN 33 // Pin para el riego del agua
+#define FertPIN 31 // PIN para el riego del agua
 
-String comando = "leerTempHum";
+String comando = "bajar";
 boolean stringComplete = false;
 
 // Variables necesarias para el motor.
@@ -45,13 +45,13 @@ int Paso [ 8 ][ 4 ] = {
 };
 
 // Variables necesarias para el DHT
-// DHT dht_1(DHTPIN_1, DHTTYPE); // Se inicia una variable que será usada por Arduino para comunicarse con el sensor
-DHT dht_2(DHTPIN_2, DHTTYPE); // Se inicia otra variable que será usada por Arduino para comunicarse con el sensor
+DHT dht_1(DHTPIN_1, DHTTYPE); // Se inicia una variable que será usada por Arduino para comunicarse con el sensor
+// DHT dht_2(DHTPIN_2, DHTTYPE); // Se inicia otra variable que será usada por Arduino para comunicarse con el sensor
 float temp, hum; // Se crean variables para obtener los datos.
 int c = 0, b = 0;
 
 // Variables necesarias para la resistencia foto.
-const int LDRPin = A0;
+const int LDRPin = A1;
 int V, ilum;
 
 void setup() {
@@ -68,10 +68,10 @@ void setup() {
   pinMode(ON4, OUTPUT);
 
   // Setup necesario para los sensores DHT22
-  // dht_1.begin(); // Se inicia el sensor (1).
-  dht_2.begin(); // Se inicia el sensor (2).
+  dht_1.begin(); // Se inicia el sensor (1).
+  // dht_2.begin(); // Se inicia el sensor (2).
   pinMode(DHTPIN_1, OUTPUT);
-  pinMode(DHTPIN_2, OUTPUT);
+  // pinMode(DHTPIN_2, OUTPUT);
 
   // Setup necesario para el riego y la fertilizacion
   pinMode(AguaPIN, OUTPUT);
@@ -190,22 +190,23 @@ void setTempHum() {
 }
 
 void leerDHTs() {
-  //float h1 = dht_1.readHumidity(); // Lee la humedad del primer sensor.
-  float h2 = dht_2.readHumidity(); // Lee la humedad del segundo sensor
-  //float t1 = dht_1.readTemperature(); // Lee la temperatura del primer sensor.
-  float t2 = dht_2.readTemperature(); // Lee la temperatura del segundo sensor.
+  float h1 = dht_1.readHumidity(); // Lee la humedad del primer sensor.
+  // float h2 = dht_2.readHumidity(); // Lee la humedad del segundo sensor
+  float t1 = dht_1.readTemperature(); // Lee la temperatura del primer sensor.
+  // float t2 = dht_2.readTemperature(); // Lee la temperatura del segundo sensor.
   //float h = (h1 + h2) / 2;
   //float t = (t1 + t2) / 2;
 
-  Serial.println(h2);
-  Serial.println(t2);
-
+  Serial.println(t1);
+  Serial.println(h1);
+  /*
   if (t2 >= temp) {
     motores();
   }
   if (h2 < hum) {
     motores();
   }
+  */
 }
 /*
  * Terminan los codigos de DHT22
