@@ -23,7 +23,7 @@
 #define AguaPIN 33 // Pin para el riego del agua
 #define FertPIN 31 // PIN para el riego del agua
 
-String comando = "bajar";
+String comando = "leerTempHum";
 boolean stringComplete = false;
 
 // Variables necesarias para el motor.
@@ -78,7 +78,8 @@ void setup() {
   pinMode(FertPIN, OUTPUT);
 
   //Establecer la temperatura máxima
-  //setTempHum();
+  // setTempHum();
+  temp = 30;
 }
 
 void loop() {
@@ -199,14 +200,17 @@ void leerDHTs() {
 
   Serial.println(t1);
   Serial.println(h1);
-  /*
-  if (t2 >= temp) {
+  
+  if (t1 >= temp) {
+    Direction = true;
+    Direction2 = false;
     motores();
   }
-  if (h2 < hum) {
+  if (t1 < temp) {
+    Direction = false;
+    Direction2 = true;
     motores();
   }
-  */
 }
 /*
  * Terminan los codigos de DHT22
@@ -245,7 +249,7 @@ void fertilizar(){
  * Terminan los codigos de rogar y fertilizar.
  */
 
- /*
+
 void serialEvent(){
   while(Serial.available()){
     char inChar = (char)Serial.read();
@@ -256,4 +260,4 @@ void serialEvent(){
       comando += inChar;
     }
   }
-}*/
+}
